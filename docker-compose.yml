@@ -1,0 +1,93 @@
+version: '3.9'
+
+x-common-web-configs: &common-web-configs
+  volumes:
+    - .:/usr/src/app/
+  env_file:
+    - .env
+  depends_on:
+    - db
+    - redis
+  networks:
+    - django-saas-network
+
+services:
+  db:
+    image: postgres:14-alpine
+    restart: "always"
+    environment:
+      - LC_ALL=C.UTF-8
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db_local
+    ports:
+      - "5431:5432" # notice the port mapping to 5431
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - django-saas-network
+
+  migrate:
+    build: .
+    command: python manage.py migrate
+    <<: *common-web-configs
+
+  tailwind:
+    build: .
+    command: python manage.py tailwind start
+    restart: "unless-stopped"
+    tty: true
+    <<: *common-web-configs
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000  # change to run server plus once they fix the reload bug
+    restart: "unless-stopped"
+    <<: *common-web-configs
+
+  celery-worker:
+    build: .
+    command: celery -A core worker -E -l DEBUG
+    <<: *common-web-configs
+
+  celery-beat:
+    build: .
+    command: celery -A core beat -l DEBUG
+    <<: *common-web-configs
+
+  redis:
+    image: redis:6-alpine
+    networks:
+      - django-saas-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5051:80"
+    networks:
+      - django-saas-network
+
+  mailhog:
+    image: mailhog/mailhog
+    restart: always
+    logging:
+      driver: 'none'
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - django-saas-network
+
+volumes:
+  pgdata:
+  pgadmin:
+
+networks:
+  django-saas-network:
