@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 from pathlib import Path
 
 from celery.schedules import crontab
@@ -26,7 +27,7 @@ SECRET_KEY = "django-insecure-qdxt#j&)39+uq(8az+j%dr+wqa8eq+f^*w(2vc&ko0#(2%o$uv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -39,12 +40,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # external apps
-    "django_extensions",
-    'tailwind',
-    'theme',
     "django_celery_beat",
 
     # internal apps
+    "apps.public"
 ]
 if DEBUG:
     INSTALLED_APPS.extend(["debug_toolbar", "django_browser_reload"])
@@ -72,7 +71,9 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            os.path.join(BASE_DIR, "templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "debug": DEBUG,
@@ -159,6 +160,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = str(BASE_DIR.joinpath("staticfiles"))
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "assets", "dist")]
 MEDIA_URL = "media/"
 MEDIA_ROOT = str(BASE_DIR.joinpath("mediafiles"))
 
@@ -166,9 +168,6 @@ MEDIA_ROOT = str(BASE_DIR.joinpath("mediafiles"))
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# Tailwind app config
-TAILWIND_APP_NAME = 'theme'
 
 # Email config
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"

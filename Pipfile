@@ -5,20 +5,19 @@ name = "pypi"
 
 [packages]
 django = "*" # Django
-django-extensions = "*" # for shell_plus and other useful commands
 django-storages = "*" # for S3
 django-environ = "*" # for environment variables
 redis = "*" # in-memory cache
 django-redis = "*" # for Redis cache
 celery = "*" # for background tasks
 django-celery-beat = "*" # for periodic tasks
-django-tailwind = "*" # for tailwind
-psycopg2 = "*" # for postgres
+psycopg2 = {version = "*", sys_platform = "== 'linux'"} # for postgres on linux/docker
+psycopg2-binary = {version = "*", markers = "sys_platform == 'win32' or sys_platform == 'darwin'"} # for postgres on local machine
 
 [dev-packages]
+django-browser-reload = "*" # for reloading browser on file change
 django-debug-toolbar = "*" # for debugging
-psycopg2-binary = "*" # for postgres on local
-werkzeug = "*" # for runserver_plus command
+pywatchman = "*" # to make runserver faster
 
 [requires]
 python_version = "3.9"

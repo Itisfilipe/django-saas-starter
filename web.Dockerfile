@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Install pipenv and compilation dependencies
 RUN pip install pipenv
-RUN apt-get update && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev nodejs npm make
+RUN apt-get update && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev nodejs npm make watchman
 
 # Install python dependencies in /.venv
 COPY Pipfile .
@@ -26,6 +26,4 @@ COPY . /usr/src/app
 # set work directory
 WORKDIR /usr/src/app
 
-RUN python manage.py tailwind install --no-input;
-RUN python manage.py tailwind build --no-input;
 RUN python manage.py collectstatic --no-input;

@@ -11,34 +11,24 @@ module.exports = {
          * HTML. Paths to Django template files that will contain Tailwind CSS classes.
          */
 
-        /*  Templates within theme app (<tailwind_app_name>/templates), e.g. base.html. */
-        '../templates/**/*.html',
-        '../static_src/src/*.css',
-
         /*
          * Root templates folder
          * app template folder root
          * app template folder subfolders
          */
-        '../../templates/**/*.html',
-        '../../apps/**/templates/*.html',
-        '../../apps/**/templates/**/*.html',
+        '../templates/**/*.html',
+        '../apps/*/templates/**/*.html',
 
-        /**
-         * JS: If you use Tailwind CSS in JavaScript, uncomment the following lines and make sure
-         * patterns match your project structure.
-         */
-        /* JS 1: Ignore any JavaScript in node_modules folder. */
-        '!../../**/node_modules',
-        /* JS 2: Process all JavaScript files in the project. */
-        '../../**/*.js',
-
+        /* Ignore any JavaScript in node_modules folder. */
+        '!./node_modules',
+        /* Ignore webpack generate file. */
+        '!../templates/webpack_js_css.html',
         /**
          * Python: If you use Tailwind CSS classes in Python, uncomment the following line
          * and make sure the pattern below matches your project structure.
          */
-        '../../apps/**/*.py',
-        '../../core/**/*.py'
+        // '../../apps/**/*.py',
+        // '../../core/**/*.py'
     ],
     theme: {
         extend: {},

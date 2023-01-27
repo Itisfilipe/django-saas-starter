@@ -1,6 +1,9 @@
 version: '3.9'
 
 x-common-web-configs: &common-web-configs
+  build:
+    context: .
+    dockerfile: web.Dockerfile
   volumes:
     - .:/usr/src/app/
   env_file:
@@ -28,30 +31,31 @@ services:
       - django-saas-network
 
   migrate:
-    build: .
     command: python manage.py migrate
     <<: *common-web-configs
 
-  tailwind:
-    build: .
-    command: python manage.py tailwind start
-    restart: "unless-stopped"
-    tty: true
-    <<: *common-web-configs
-
   web:
-    build: .
     command: python manage.py runserver 0.0.0.0:8000  # change to run server plus once they fix the reload bug
     restart: "unless-stopped"
+    ports:
+      - "8000:8000"
     <<: *common-web-configs
 
+  assets:
+    build:
+      context: .
+      dockerfile: assets.Dockerfile
+    command: npm run dev
+    restart: "unless-stopped"
+    volumes:
+      - .:/usr/src/app  # We need to watch changes in templates and static files so just copy everything
+
+
   celery-worker:
-    build: .
     command: celery -A core worker -E -l DEBUG
     <<: *common-web-configs
 
   celery-beat:
-    build: .
     command: celery -A core beat -l DEBUG
     <<: *common-web-configs
 
