@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*" # Django
+django-storages = "*" # for S3
+django-environ = "*" # for environment variables
+redis = "*" # in-memory cache
+django-redis = "*" # for Redis cache
+celery = "*" # for background tasks
+django-celery-beat = "*" # for periodic tasks
+psycopg2 = {version = "*", sys_platform = "== 'linux'"} # for postgres on linux/docker
+psycopg2-binary = {version = "*", markers = "sys_platform == 'win32' or sys_platform == 'darwin'"} # for postgres on local machine
+
+[dev-packages]
+django-browser-reload = "*" # for reloading browser on file change
+django-debug-toolbar = "*" # for debugging
+pywatchman = "*" # to make runserver faster
+
+[requires]
+python_version = "3.9"
+python_full_version = "3.9.15"
