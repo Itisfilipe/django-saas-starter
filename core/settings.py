@@ -66,6 +66,12 @@ INTERNAL_IPS = [
     "0.0.0.0",
 ]
 
+# django debug toolbar configuration for docker
+if DEBUG:
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS += [ip[:-1] + '1' for ip in ips]
+
 ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
@@ -169,6 +175,7 @@ MEDIA_ROOT = str(BASE_DIR.joinpath("mediafiles"))
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Email config
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
+# Email config for development
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "mailhog"
+EMAIL_PORT = "1025"

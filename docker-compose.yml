@@ -23,8 +23,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=db_local
-    ports:
-      - "5431:5432" # notice the port mapping to 5431
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -47,17 +45,27 @@ services:
       dockerfile: assets.Dockerfile
     command: npm run dev
     restart: "unless-stopped"
+    tty: true
     volumes:
       - .:/usr/src/app  # We need to watch changes in templates and static files so just copy everything
 
-
   celery-worker:
-    command: celery -A core worker -E -l DEBUG
+    command: celery -A core worker -l INFO
     <<: *common-web-configs
 
   celery-beat:
-    command: celery -A core beat -l DEBUG
+    command: celery -A core beat -l INFO
     <<: *common-web-configs
+
+  celery-flower:
+    image: mher/flower
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379
+      - FLOWER_PORT=8888
+    ports:
+      - "8888:8888"
+    networks:
+      - django-saas-network
 
   redis:
     image: redis:6-alpine
@@ -74,7 +82,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
-      - "5051:80"
+      - "5050:80"
     networks:
       - django-saas-network
 

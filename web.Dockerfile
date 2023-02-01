@@ -1,4 +1,4 @@
-FROM python:3.9.15-slim
+FROM python:3.9.16-slim
 
 # Setup env
 ENV LANG C.UTF-8
@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Install pipenv and compilation dependencies
 RUN pip install pipenv
-RUN apt-get update && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev nodejs npm make watchman
+RUN apt-get update && apt-get install -y --no-install-recommends gcc libpq-dev python3-dev make watchman
 
 # Install python dependencies in /.venv
 COPY Pipfile .

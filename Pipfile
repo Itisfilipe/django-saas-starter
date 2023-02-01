@@ -21,4 +21,4 @@ pywatchman = "*" # to make runserver faster
 
 [requires]
 python_version = "3.9"
-python_full_version = "3.9.15"
+python_full_version = "3.9.16"
